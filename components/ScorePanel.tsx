@@ -1,6 +1,9 @@
 "use client";
 
-import { ScoreResult, ScoreBreakdownItem } from "@/lib/scoring";
+import { ScoreResult, ScoreBreakdownItem, buildTradeExplanation, buildConfidence } from "@/lib/scoring";
+import { TradeFormState } from "@/types/trade";
+import WhyThisTrade from "@/components/WhyThisTrade";
+import ConfidenceBadge from "@/components/ConfidenceBadge";
 
 // ─── Theme config per verdict ─────────────────────────────────────────────────
 
@@ -172,13 +175,17 @@ export default function ScorePanel({
   result,
   ticker,
   optionType,
+  form,
 }: {
   result: ScoreResult;
   ticker: string;
   optionType: string;
+  form: TradeFormState;
 }) {
   const t = THEME[result.label];
   const passCount = result.breakdown.filter((b) => b.passed).length;
+  const explanation = buildTradeExplanation(form, result);
+  const confidence  = buildConfidence(form, result);
 
   return (
     <div
@@ -240,6 +247,11 @@ export default function ScorePanel({
               </span>
               <span className="font-mono text-xs text-[#44445a]">— {t.sublabel}</span>
             </div>
+
+            {/* Confidence badge — sits below verdict, doesn't compete */}
+            <div>
+              <ConfidenceBadge confidence={confidence} />
+            </div>
           </div>
         </div>
 
@@ -272,6 +284,12 @@ export default function ScorePanel({
             sub={`${result.breakdown.length - passCount} failed`}
           />
         </div>
+
+        {/* ── Divider ── */}
+        <div className="h-px bg-[#161622]" />
+
+        {/* ══ WHY THIS TRADE ══ */}
+        <WhyThisTrade explanation={explanation} />
 
         {/* ── Divider ── */}
         <div className="h-px bg-[#161622]" />

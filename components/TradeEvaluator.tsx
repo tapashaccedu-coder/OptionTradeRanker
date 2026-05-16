@@ -43,6 +43,12 @@ const RISK_FIELDS: FieldConfig[] = [
   { key: "positionSize", label: "Position Size", placeholder: "1000", type: "number", suffix: "$" },
 ];
 
+const LIQUIDITY_FIELDS: FieldConfig[] = [
+  { key: "bidAskSpread", label: "Bid/Ask Spread", placeholder: "0.05", type: "number", suffix: "$",  hint: "Optional" },
+  { key: "optionVolume", label: "Option Volume",  placeholder: "500",  type: "number", suffix: "vol", hint: "Optional" },
+  { key: "openInterest", label: "Open Interest",  placeholder: "2000", type: "number", suffix: "OI",  hint: "Optional" },
+];
+
 // ─── Shared section heading ───────────────────────────────────────────────────
 
 function SectionHeading({
@@ -393,6 +399,24 @@ export default function TradeEvaluator() {
 
             <div className="h-px" style={{ background: "var(--bg-border)" }} />
 
+            {/* D – Liquidity (optional — feeds confidence scoring) */}
+            <div>
+              <GroupLabel letter="D" label="Liquidity & Context" />
+              <p
+                className="font-mono text-[10px] mb-4 -mt-1"
+                style={{ color: "var(--ink-4)" }}
+              >
+                Optional — improves Confidence scoring when provided
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {LIQUIDITY_FIELDS.map((f) => (
+                  <FormField key={f.key} config={f} value={form[f.key] as string} onChange={handleChange} />
+                ))}
+              </div>
+            </div>
+
+            <div className="h-px" style={{ background: "var(--bg-border)" }} />
+
             {/* Actions */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1">
               <button
@@ -491,7 +515,7 @@ export default function TradeEvaluator() {
 
           {/* 02 — Score */}
           <CollapsibleSection num="02 /" title="Score Result">
-            <ScorePanel result={result} ticker={form.ticker} optionType={form.optionType} />
+            <ScorePanel result={result} ticker={form.ticker} optionType={form.optionType} form={form} />
           </CollapsibleSection>
 
           {/* 03 — P/L Chart */}

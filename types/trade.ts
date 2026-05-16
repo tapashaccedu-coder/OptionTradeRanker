@@ -17,6 +17,10 @@ export interface TradeFormState {
   stopLoss: string;
   targetProfit: string;
   positionSize: string;
+  // Optional liquidity & context fields (used for confidence scoring)
+  bidAskSpread: string;   // absolute spread in $
+  optionVolume: string;   // contracts traded today
+  openInterest: string;   // open interest
 }
 
 export const defaultTradeForm: TradeFormState = {
@@ -32,6 +36,9 @@ export const defaultTradeForm: TradeFormState = {
   stopLoss: "",
   targetProfit: "",
   positionSize: "",
+  bidAskSpread: "",
+  optionVolume: "",
+  openInterest: "",
 };
 
 /** Parsed trade (post-validation) */
